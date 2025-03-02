@@ -61,10 +61,10 @@ public:
 		VkPipeline pipelineIntegrate;
 		struct UniformData {
 			float deltaT{ 0.0f };
-			int32_t particleCount{ 0 };
+            __attribute__((unused)) int32_t particleCount{ 0 };
 			float gravity{ 0.002f };
 			float power{ 0.75f };
-			float soften{ 0.05f };
+            __attribute__((unused)) float soften{ 0.05f };
 		} uniformData;
 		vks::Buffer uniformBuffer;
 	} compute{};

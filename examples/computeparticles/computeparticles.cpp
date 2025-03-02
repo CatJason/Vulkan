@@ -66,7 +66,7 @@ public:
 			float deltaT;							//		Frame delta time
 			float destX;							//		x position of the attractor
 			float destY;							//		y position of the attractor
-			int32_t particleCount = PARTICLE_COUNT;
+            __attribute__((unused)) int32_t particleCount = PARTICLE_COUNT;
 		} uniformData;
 	} compute;
 

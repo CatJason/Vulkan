@@ -98,7 +98,7 @@ public:
 			float sphereRadius{ 1.0f };
 			glm::vec4 spherePos{ 0.0f, 0.0f, 0.0f, 0.0f };
 			glm::vec4 gravity{ 0.0f, 9.8f, 0.0f, 0.0f };
-			glm::ivec2 particleCount{ 0 };
+            __attribute__((unused)) glm::ivec2 particleCount{ 0 };
 		} uniformData;
 		vks::Buffer uniformBuffer;
 	} compute;
