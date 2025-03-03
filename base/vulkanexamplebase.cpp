@@ -62,7 +62,7 @@ VkResult VulkanExampleBase::createInstance()
 		{
 			for (VkExtensionProperties& extension : extensions)
 			{
-				supportedInstanceExtensions.push_back(extension.extensionName);
+				supportedInstanceExtensions.emplace_back(extension.extensionName);
 			}
 		}
 	}
@@ -76,7 +76,7 @@ VkResult VulkanExampleBase::createInstance()
 #endif
 
 	// Enabled requested instance extensions
-	if (enabledInstanceExtensions.size() > 0)
+	if (!enabledInstanceExtensions.empty())
 	{
 		for (const char * enabledExtension : enabledInstanceExtensions)
 		{
@@ -120,7 +120,7 @@ VkResult VulkanExampleBase::createInstance()
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 	}
 
-	if (instanceExtensions.size() > 0) {
+	if (!instanceExtensions.empty()) {
 		instanceCreateInfo.enabledExtensionCount = (uint32_t)instanceExtensions.size();
 		instanceCreateInfo.ppEnabledExtensionNames = instanceExtensions.data();
 	}
@@ -225,7 +225,7 @@ void VulkanExampleBase::prepare()
 	}
 }
 
-VkPipelineShaderStageCreateInfo VulkanExampleBase::loadShader(std::string fileName, VkShaderStageFlagBits stage)
+VkPipelineShaderStageCreateInfo VulkanExampleBase::loadShader(const std::string& fileName, VkShaderStageFlagBits stage)
 {
 	VkPipelineShaderStageCreateInfo shaderStage = {};
 	shaderStage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -316,7 +316,7 @@ void VulkanExampleBase::renderLoop()
 
 		benchmark.run([=] { render(); }, vulkanDevice->properties);
 		vkDeviceWaitIdle(device);
-		if (benchmark.filename != "") {
+		if (!benchmark.filename.empty()) {
 			benchmark.saveResults();
 		}
 		return;
@@ -344,7 +344,7 @@ void VulkanExampleBase::renderLoop()
 		}
 	}
 #elif defined(VK_USE_PLATFORM_ANDROID_KHR)
-	while (1)
+	while (true)
 	{
 		int ident;
 		int events;
@@ -353,9 +353,9 @@ void VulkanExampleBase::renderLoop()
 
 		focused = true;
 
-		while ((ident = ALooper_pollOnce(focused ? 0 : -1, NULL, &events, (void**)&source)) > ALOOPER_POLL_TIMEOUT)
+		while ((ident = ALooper_pollOnce(focused ? 0 : -1, nullptr, &events, (void**)&source)) > ALOOPER_POLL_TIMEOUT)
 		{
-			if (source != NULL)
+			if (source != nullptr)
 			{
 				source->process(androidApp, source);
 			}
@@ -784,23 +784,23 @@ void VulkanExampleBase::submitFrame()
 VulkanExampleBase::VulkanExampleBase()
 {
 	// Command line arguments
-	commandLineParser.add("help", { "--help" }, 0, "Show help");
-	commandLineParser.add("validation", { "-v", "--validation" }, 0, "Enable validation layers");
-	commandLineParser.add("vsync", { "-vs", "--vsync" }, 0, "Enable V-Sync");
-	commandLineParser.add("fullscreen", { "-f", "--fullscreen" }, 0, "Start in fullscreen mode");
-	commandLineParser.add("width", { "-w", "--width" }, 1, "Set window width");
-	commandLineParser.add("height", { "-h", "--height" }, 1, "Set window height");
-	commandLineParser.add("shaders", { "-s", "--shaders" }, 1, "Select shader type to use (gls, hlsl or slang)");
-	commandLineParser.add("gpuselection", { "-g", "--gpu" }, 1, "Select GPU to run on");
-	commandLineParser.add("gpulist", { "-gl", "--listgpus" }, 0, "Display a list of available Vulkan devices");
-	commandLineParser.add("benchmark", { "-b", "--benchmark" }, 0, "Run example in benchmark mode");
-	commandLineParser.add("benchmarkwarmup", { "-bw", "--benchwarmup" }, 1, "Set warmup time for benchmark mode in seconds");
-	commandLineParser.add("benchmarkruntime", { "-br", "--benchruntime" }, 1, "Set duration time for benchmark mode in seconds");
-	commandLineParser.add("benchmarkresultfile", { "-bf", "--benchfilename" }, 1, "Set file name for benchmark results");
-	commandLineParser.add("benchmarkresultframes", { "-bt", "--benchframetimes" }, 0, "Save frame times to benchmark results file");
-	commandLineParser.add("benchmarkframes", { "-bfs", "--benchmarkframes" }, 1, "Only render the given number of frames");
+	commandLineParser.add("help", { "--help" }, false, "Show help");
+	commandLineParser.add("validation", { "-v", "--validation" }, false, "Enable validation layers");
+	commandLineParser.add("vsync", { "-vs", "--vsync" }, false, "Enable V-Sync");
+	commandLineParser.add("fullscreen", { "-f", "--fullscreen" }, false, "Start in fullscreen mode");
+	commandLineParser.add("width", { "-w", "--width" }, true, "Set window width");
+	commandLineParser.add("height", { "-h", "--height" }, true, "Set window height");
+	commandLineParser.add("shaders", { "-s", "--shaders" }, true, "Select shader type to use (gls, hlsl or slang)");
+	commandLineParser.add("gpuselection", { "-g", "--gpu" }, true, "Select GPU to run on");
+	commandLineParser.add("gpulist", { "-gl", "--listgpus" }, false, "Display a list of available Vulkan devices");
+	commandLineParser.add("benchmark", { "-b", "--benchmark" }, false, "Run example in benchmark mode");
+	commandLineParser.add("benchmarkwarmup", { "-bw", "--benchwarmup" }, true, "Set warmup time for benchmark mode in seconds");
+	commandLineParser.add("benchmarkruntime", { "-br", "--benchruntime" }, true, "Set duration time for benchmark mode in seconds");
+	commandLineParser.add("benchmarkresultfile", { "-bf", "--benchfilename" }, true, "Set file name for benchmark results");
+	commandLineParser.add("benchmarkresultframes", { "-bt", "--benchframetimes" }, false, "Save frame times to benchmark results file");
+	commandLineParser.add("benchmarkframes", { "-bfs", "--benchmarkframes" }, true, "Only render the given number of frames");
 #if (!(defined(VK_USE_PLATFORM_IOS_MVK) || defined(VK_USE_PLATFORM_MACOS_MVK) || defined(VK_USE_PLATFORM_METAL_EXT)))
-	commandLineParser.add("resourcepath", { "-rp", "--resourcepath" }, 1, "Set path for dir where assets and shaders folder is present");
+	commandLineParser.add("resourcepath", { "-rp", "--resourcepath" }, true, "Set path for dir where assets and shaders folder is present");
 #endif
 	commandLineParser.parse(args);
 	if (commandLineParser.isSet("help")) {
