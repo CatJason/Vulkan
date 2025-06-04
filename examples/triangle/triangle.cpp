@@ -18,6 +18,7 @@
 // 我们希望让 GPU 和 CPU 保持忙碌。为此，我们可以在前一个命令缓冲区仍在执行时开始构建一个新的命令缓冲区
 // 这个数字定义了可以同时处理的帧数的最大值
 // 增加这个数字可能会提高性能，但也会引入额外的延迟
+// 详情见: https://catjason.github.io/2025/05/31/8%E6%B8%B2%E6%9F%93%E5%BC%95%E6%93%8E/04%20Vulkan/01%20%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3%20Vulkan%20MAX_CONCURRENT_FRAMES/
 #define MAX_CONCURRENT_FRAMES 2
 
 class VulkanExample : public VulkanExampleBase {
@@ -52,7 +53,7 @@ public:
         uint8_t *mapped{nullptr};
     };
 
-    // 我们为每一帧使用一个 UBO，以便实现帧重叠，并确保在统一缓冲区仍在使用时不会更新它
+    // 我们为每一帧使用一个 cc，并确保在统一缓冲区仍在使用时不会更新它
     std::array<UniformBuffer, MAX_CONCURRENT_FRAMES> uniformBuffers;
 
     // 为了简化，我们使用与着色器中相同的统一区块布局：
@@ -80,7 +81,7 @@ public:
     // 管线（通常称为“管线状态对象”）用于打包所有影响管线的状态
     // 在 OpenGL 中，几乎所有状态都可以（几乎）随时更改，而 Vulkan 要求提前定义图形（和计算）管线的状态
     // 因此，对于每种非动态管线状态的组合，都需要一个新的管线（这里不讨论一些例外情况）
-    // 尽管这增加了提前规划的维度，但它为驱动程序提供了性能优化的绝佳机会
+    // 尽管这增加了提前规划的维度，但它为驱动程序提供了性能优化的绝佳
     VkPipeline pipeline{VK_NULL_HANDLE};
 
     // 描述符集布局描述了着色器绑定布局（无需实际引用描述符）
