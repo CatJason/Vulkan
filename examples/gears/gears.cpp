@@ -435,13 +435,41 @@ public:
 
     vks::Buffer uniformBuffer; // 统一缓冲区
 
-    VulkanExample() : VulkanExampleBase() {
-        title = "Vulkan齿轮示例";
-        camera.type = Camera::CameraType::lookat;
-        camera.setPosition(glm::vec3(0.0f, 2.5f, -16.0f));
-        camera.setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-        camera.setPerspective(60.0f, (float)width / (float)height, 0.001f, 256.0f);
-        timerSpeed *= 0.25f; // 减慢动画速度
+// 构造函数：初始化Vulkan齿轮示例
+    VulkanExample() : VulkanExampleBase() {  // 调用基类构造函数初始化Vulkan基础环境
+
+        // 设置窗口标题
+        title = "Vulkan齿轮示例";  // 显示在窗口标题栏的文字
+
+        // 配置相机参数
+        camera.type = Camera::CameraType::lookat;  // 使用lookat相机模式（固定目标点）
+        camera.setPosition(glm::vec3(0.0f, 2.5f, -16.0f));  // 设置相机初始位置（X,Y,Z坐标）
+        camera.setRotation(glm::vec3(0.0f, 0.0f, 0.0f));    // 设置相机初始旋转角度（绕X,Y,Z轴）
+        camera.setPerspective(
+                60.0f,                     // 垂直视野角度（FOV）
+                (float)width / (float)height, // 宽高比（根据窗口尺寸计算）
+                0.001f,                    // 近裁剪面距离
+                256.0f                     // 远裁剪面距离
+        );
+
+        // 调整动画速度
+        timerSpeed *= 0.25f;  // 将默认动画速度降低到25%（使齿轮旋转更慢，便于观察）
+
+        /* 参数详解：
+        1. 相机位置 (0.0f, 2.5f, -16.0f):
+           - Y轴2.5单位：从上方俯视齿轮组
+           - Z轴-16单位：与齿轮保持适当观察距离
+
+        2. 透视投影参数：
+           - 60度视野：接近人眼自然视角
+           - 近裁剪面0.001：可看清近距离细节
+           - 远裁剪面256：足够容纳场景深度
+
+        3. 动画速度调整：
+           - 原始timerSpeed通常为1.0
+           - 乘以0.25后变为0.25倍速
+           - 避免齿轮旋转过快影响观察
+        */
     }
 
     ~VulkanExample() {
